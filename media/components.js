@@ -1,4 +1,5 @@
 import { html, useRef, useLayoutEffect } from 'https://esm.sh/htm/preact/standalone';
+import { extension, groupBy } from './utils.js';
 
 const Prism = window.Prism;
 Prism.manual = true;
@@ -44,14 +45,6 @@ function Snippet(props) {
     `;
 }
 
-function extension(filePath) {
-    const match = filePath.match(/\.([^\.]+)$/);
-    if (match) {
-        return match[1];
-    }
-    return "";
-}
-
 function CodeBlock(props) {
     const {lines, linesBefore, linesAfter, language, startLineNumber, endLineNumber} = props;
     const className = `language-${language} line-numbers`;
@@ -66,20 +59,4 @@ function CodeBlock(props) {
     return html`
     <pre class=${className} data-line="${startLineNumber + 1}-${endLineNumber + 1}" data-line-offset=${contextStartLineNumber} data-start=${contextStartLineNumber + 1}><code ref=${codeRef}>${code}</code></pre>
     `;
-}
-
-function groupBy(array, getKey) {
-    const grouped = [];
-    let lastKey = null;
-    let lastGroup = null;
-    for (const item of array) {
-        const key = getKey(item);
-        if (key !== lastKey) {
-            lastKey = key;
-            lastGroup = [];
-            grouped.push([key, lastGroup]);
-        }
-        lastGroup.push(item);
-    }
-    return grouped;
 }
