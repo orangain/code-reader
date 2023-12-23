@@ -1,7 +1,7 @@
 import { html, useRef, useLayoutEffect } from 'https://esm.sh/htm/preact/standalone';
 import { extension, groupBy } from './utils.js';
 
-const Prism = window.Prism;
+const Prism = globalThis.Prism;
 Prism.manual = true;
 
 export function Note(props) {
