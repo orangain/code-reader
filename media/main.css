@@ -1,0 +1,5 @@
+code {
+    /* Reset default styles of VS Code WebView */
+    background: none;
+    padding: 0;
+}

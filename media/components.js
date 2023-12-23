@@ -1,5 +1,8 @@
 import { html, useRef, useLayoutEffect } from 'https://esm.sh/htm/preact/standalone';
 
+const Prism = window.Prism;
+Prism.manual = true;
+
 export function Note(props) {
     const {note} = props;
 
@@ -30,16 +33,28 @@ function Symbol(props) {
 
 function Snippet(props) {
     const {snippet} = props;
-    return html`<${CodeBlock} code=${snippet.lines.join("\n")} startLineNumber=${snippet.startLineNumber}/>
+    return html`<${CodeBlock} code=${snippet.lines.join("\n")} language=${extension(snippet.filePath)} startLineNumber=${snippet.startLineNumber}/>
     `;
 }
 
+function extension(filePath) {
+    const match = filePath.match(/\.([^\.]+)$/);
+    if (match) {
+        return match[1];
+    }
+    return "";
+}
+
 function CodeBlock(props) {
-    const {code, startLineNumber} = props;
+    const {code, language, startLineNumber} = props;
+    const className = `language-${language} line-numbers`;
     const codeRef = useRef(null);
+    useLayoutEffect(() => {
+        Prism.highlightElement(codeRef.current);
+    });
 
     return html`
-    <pre><code ref=${codeRef}>${code}</code></pre>
+    <pre data-start=${startLineNumber + 1}><code ref=${codeRef} class=${className}>${code}</code></pre>
     `;
 }
 

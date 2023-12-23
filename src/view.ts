@@ -38,6 +38,13 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
   }
 
   initialWebviewContent() {
+    const colorTheme = vscode.window.activeColorTheme;
+    const prismStyleUri =
+      colorTheme.kind === vscode.ColorThemeKind.Dark ||
+      colorTheme.kind === vscode.ColorThemeKind.HighContrast
+        ? "https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-vsc-dark-plus.min.css"
+        : "https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-vs.min.css";
+
     const scriptUri = this.webviewView!.webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, "media", "main.js")
     );
@@ -50,6 +57,13 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code Reader Note</title>
+
+    <link href="${prismStyleUri}" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
     <link href="${styleUri}" rel="stylesheet">
     <script type="module" src="${scriptUri}"></script>
 </head>
