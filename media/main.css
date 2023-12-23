@@ -3,3 +3,9 @@ code {
     background: none;
     padding: 0;
 }
+
+.line-highlight.line-highlight {
+    /* Override highlight color */
+    background-color: var(--vscode-editor-wordHighlightBackground);
+    box-shadow: none;
+}

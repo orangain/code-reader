@@ -16,7 +16,7 @@ export function Note(props) {
 
 function File(props) {
     const {filePath, snippets} = props;
-    const snippetsBySymbolName = groupBy(snippets, (snippet) => snippet.contextSymbols[0].name);
+    const snippetsBySymbolName = groupBy(snippets, (snippet) => snippet.contextSymbols.length > 0 ? snippet.contextSymbols[0].name : "");
     return html`
     <h2>${filePath}</h2>
     ${snippetsBySymbolName.map(([symbolName, snippets]) => html`<${Symbol} symbolName=${symbolName} snippets=${snippets} key=${symbolName}/>`)}
@@ -33,7 +33,14 @@ function Symbol(props) {
 
 function Snippet(props) {
     const {snippet} = props;
-    return html`<${CodeBlock} code=${snippet.lines.join("\n")} language=${extension(snippet.filePath)} startLineNumber=${snippet.startLineNumber}/>
+    return html`<${CodeBlock}
+        lines=${snippet.lines}
+        linesBefore=${snippet.linesBefore.slice(-3)}
+        linesAfter=${snippet.linesAfter.slice(0, 3)}
+        language=${extension(snippet.filePath)}
+        startLineNumber=${snippet.startLineNumber}
+        endLineNumber=${snippet.endLineNumber}
+    />
     `;
 }
 
@@ -46,15 +53,18 @@ function extension(filePath) {
 }
 
 function CodeBlock(props) {
-    const {code, language, startLineNumber} = props;
+    const {lines, linesBefore, linesAfter, language, startLineNumber, endLineNumber} = props;
     const className = `language-${language} line-numbers`;
+    const code = [...linesBefore, ...lines, ...linesAfter].join("\n");
+    const contextStartLineNumber = startLineNumber - linesBefore.length; // 0-based
+
     const codeRef = useRef(null);
     useLayoutEffect(() => {
         Prism.highlightElement(codeRef.current);
     });
 
     return html`
-    <pre data-start=${startLineNumber + 1}><code ref=${codeRef} class=${className}>${code}</code></pre>
+    <pre class=${className} data-line="${startLineNumber + 1}-${endLineNumber + 1}" data-line-offset=${contextStartLineNumber} data-start=${contextStartLineNumber + 1}><code ref=${codeRef}>${code}</code></pre>
     `;
 }
 
