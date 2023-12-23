@@ -25,5 +25,11 @@ if (!lastState) {
 }
 
 function renderNote (note) {
-    render(html`<${Note} note=${note} />`, document.body);
+    function onChangeNote (note) {
+        vscode.postMessage({
+            type: "updateNote",
+            note,
+        });
+    }
+    render(html`<${Note} note=${note} onChangeNote=${onChangeNote} />`, document.body);
 }

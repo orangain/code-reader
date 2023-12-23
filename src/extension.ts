@@ -76,9 +76,18 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const noteViewProvider = new NoteViewProvider(context.extensionUri, () => {
-    noteViewProvider.renderNote(activeNote);
-  });
+  const noteViewProvider = new NoteViewProvider(
+    context.extensionUri,
+    () => {
+      noteViewProvider.renderNote(activeNote);
+    },
+    (note) => {
+      activeNote.title = note.title;
+      activeNote.snippets = note.snippets;
+      saveNote(context, activeNote);
+      noteViewProvider.renderNote(activeNote);
+    }
+  );
 
   context.subscriptions.push(disposable);
   context.subscriptions.push(

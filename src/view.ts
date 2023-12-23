@@ -5,10 +5,16 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
   private webviewView?: vscode.WebviewView;
   private extensionUri: vscode.Uri;
   private onReady: () => void;
+  private onUpdateNote: (note: Note) => void;
 
-  constructor(extensionUri: vscode.Uri, onReady: () => void) {
+  constructor(
+    extensionUri: vscode.Uri,
+    onReady: () => void,
+    onUpdateNote: (note: Note) => void
+  ) {
     this.extensionUri = extensionUri;
     this.onReady = onReady;
+    this.onUpdateNote = onUpdateNote;
   }
 
   resolveWebviewView(
@@ -33,6 +39,9 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     switch (message.type) {
       case "ready":
         this.onReady();
+        break;
+      case "updateNote":
+        this.onUpdateNote(message.note);
         break;
     }
   }
