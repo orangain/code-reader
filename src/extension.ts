@@ -28,7 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
       const selection = editor.selection;
 
       const startLine = selection.start.line;
-      const endLine = selection.end.line;
+      const endLine =
+        selection.end.character === 0 &&
+        selection.end.line > selection.start.line
+          ? selection.end.line - 1
+          : selection.end.line;
 
       let selectedLines = getLines(editor, startLine, endLine);
       const selectedText = selectedLines.join("\n");
