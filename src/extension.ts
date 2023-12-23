@@ -86,10 +86,21 @@ export function activate(context: vscode.ExtensionContext) {
       noteViewProvider.renderNote(activeNote);
     },
     (note) => {
-      activeNote.title = note.title;
-      activeNote.snippets = note.snippets;
-      saveNote(context, activeNote);
-      noteViewProvider.renderNote(activeNote);
+      vscode.window
+        .showInformationMessage(
+          "Are you sure you want to delete this snippet?",
+          { modal: true },
+          { title: "Yes" },
+          { title: "No", isCloseAffordance: true }
+        )
+        .then((answer) => {
+          if (answer?.title === "Yes") {
+            activeNote.title = note.title;
+            activeNote.snippets = note.snippets;
+            saveNote(context, activeNote);
+            noteViewProvider.renderNote(activeNote);
+          }
+        });
     }
   );
 
