@@ -51,6 +51,16 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     const styleUri = this.webviewView!.webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, "media", "main.css")
     );
+    const codiconsStyleUri = this.webviewView!.webview.asWebviewUri(
+      vscode.Uri.joinPath(
+        this.extensionUri,
+        "node_modules",
+        "@vscode/codicons",
+        "dist",
+        "codicon.css"
+      )
+    );
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +75,7 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-
+    <link href="${codiconsStyleUri}" rel="stylesheet">
     <link href="${styleUri}" rel="stylesheet">
     <script type="module" src="${scriptUri}"></script>
 </head>

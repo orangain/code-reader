@@ -17,17 +17,19 @@ export function Note(props) {
 
 function File(props) {
     const {filePath, snippets} = props;
-    const snippetsBySymbolName = groupBy(snippets, (snippet) => snippet.contextSymbols.length > 0 ? snippet.contextSymbols[0].name : "");
+    const snippetsBySymbolName = groupBy(snippets, (snippet) => snippet.contextSymbols[0]?.name ?? "");
     return html`
-    <h2>${filePath}</h2>
-    ${snippetsBySymbolName.map(([symbolName, snippets]) => html`<${Symbol} symbolName=${symbolName} snippets=${snippets} key=${symbolName}/>`)}
+    <h2><i class="codicon codicon-symbol-file"></i> ${filePath}</h2>
+    ${snippetsBySymbolName.map(([symbolName, snippets]) => html`
+        <${Symbol} symbolName=${symbolName} kind=${snippets[0].contextSymbols[0]?.kind ?? ""} snippets=${snippets} key=${symbolName}/>
+    `)}
     `;
 }
 
 function Symbol(props) {
-    const {symbolName, snippets} = props;
+    const {symbolName, kind, snippets} = props;
     return html`
-    <h3>${symbolName}</h3>
+    <h3><i class="codicon codicon-symbol-${kind.toLowerCase()}"></i> ${symbolName}</h3>
     ${snippets.map((snippet) => html`<${Snippet} snippet=${snippet} key=${snippet.id}/>`)}
     `;
 }
