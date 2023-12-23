@@ -1,4 +1,4 @@
-import { html, useRef, useLayoutEffect } from 'https://esm.sh/htm/preact/standalone';
+import { html, useRef, useState, useLayoutEffect } from 'https://esm.sh/htm/preact/standalone';
 import { extension, groupBy } from './utils.js';
 
 const Prism = globalThis.Prism;
@@ -60,8 +60,20 @@ function Symbol(props) {
 
 function Snippet(props) {
     const {snippet, onDeleteSnippet} = props;
-    return html`<div>
-        <${SnippetActions} snippetId=${snippet.snippetId} onDeleteSnippet=${onDeleteSnippet} />
+    const [visible, setVisible] = useState(false);
+    function handleMouseEnter() {
+        setVisible(true);
+    }
+    function handleMouseLeave() {
+        setVisible(false);
+    }
+
+    return html`<div class="snippet" onMouseEnter=${handleMouseEnter} onMouseLeave=${handleMouseLeave}>
+        <${SnippetActions}
+            visible=${visible}
+            snippetId=${snippet.snippetId}
+            onDeleteSnippet=${onDeleteSnippet}
+        />
         <${CodeBlock}
             key=${snippet.snippetId}
             lines=${snippet.lines}
@@ -76,7 +88,7 @@ function Snippet(props) {
 
 function SnippetActions(props) {
     const {visible, snippetId, onDeleteSnippet} = props;
-    return html`<div class="snippet-actions">
+    return html`<div class="snippet-actions" hidden=${!visible}>
         <button type="button" onClick=${() => onDeleteSnippet(snippetId)}><i class="codicon codicon-trash"></i></button>
     </div>`;
 }

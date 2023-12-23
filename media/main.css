@@ -9,3 +9,28 @@ code {
     background-color: var(--vscode-editor-wordHighlightBackground);
     box-shadow: none;
 }
+
+button {
+    color: var(--vscode-icon-foreground);
+    background-color: transparent;
+    border: none;
+    outline: none;
+    appearance: none;
+    padding: 3px;
+    border-radius: 5px;
+
+    & :hover {
+        background-color: var(--vscode-toolbar-hoverBackground);
+    }
+}
+
+.snippet {
+    position: relative;
+
+    .snippet-actions {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10;
+    }
+}
