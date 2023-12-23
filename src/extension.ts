@@ -1,10 +1,11 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import path from "path";
+import * as os from "os";
 import * as vscode from "vscode";
 import { Note, Snippet } from "./store";
-import * as os from "os";
 import { NoteViewProvider } from "./view";
+import { vscodeSymbolKindToString } from "./vscode_util";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -60,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
         ).map((symbol) => ({
           name: symbol.name,
           containerName: symbol.containerName,
-          kind: symbol.kind,
+          kind: vscodeSymbolKindToString(symbol.kind),
           startLineNumber: symbol.location.range.start.line,
           endLineNumber: symbol.location.range.end.line,
         })),
