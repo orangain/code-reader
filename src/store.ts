@@ -9,8 +9,8 @@ export type Note = {
 export type Snippet = {
   snippetId: string;
   filePath: string;
-  startLineNumber: number;
-  endLineNumber: number;
+  startLineNumber: number; // 0-based
+  endLineNumber: number; // 0-based
   lines: string[];
   linesBefore: string[];
   linesAfter: string[];
@@ -22,13 +22,13 @@ export type Symbol = {
   name: string;
   containerName: string;
   kind: SymbolKind;
-  startLineNumber: number;
-  endLineNumber: number;
+  startLineNumber: number; // 0-based
+  endLineNumber: number; // 0-based
 };
 
 export type Comment = {
   commentId: string;
-  startLineNumber: number;
-  endLineNumber: number;
+  startLineNumber: number; // 0-based
+  endLineNumber: number; // 0-based
   text: string;
 };
