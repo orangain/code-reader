@@ -14,10 +14,37 @@
   "contributes": {
     "commands": [
       {
-        "command": "code-reader.helloWorld",
-        "title": "Hello World"
+        "command": "code-reader.addLines",
+        "title": "Add Lines to Note"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorFocus",
+          "command": "code-reader.addLines",
+          "group": "myGroup@1"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "noteSidebar",
+          "title": "Code Reader",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "noteSidebar": [
+        {
+          "type": "webview",
+          "id": "noteView",
+          "name": "Code Reader Note"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
