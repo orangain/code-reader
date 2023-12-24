@@ -164,23 +164,6 @@ async function findSymbolsAt(
   return [];
 }
 
-async function resolveDefinitions(editor: vscode.TextEditor) {
-  const position = editor.selection.active;
-  const definitions = (await vscode.commands.executeCommand(
-    "vscode.executeDefinitionProvider",
-    editor.document.uri,
-    position
-  )) as Array<vscode.Location | vscode.LocationLink>;
-
-  definitions.forEach((def) => {
-    if ("targetUri" in def) {
-      console.log("targetUri", def.targetUri.fsPath);
-    } else if ("uri" in def) {
-      console.log("uri", def.uri.fsPath);
-    }
-  });
-}
-
 function loadNote(context: vscode.ExtensionContext): Note {
   const workspaceState = context.workspaceState;
   return workspaceState.get<Note>("note", {
