@@ -88,7 +88,7 @@ function Symbol(props) {
   return (
     <>
       <h3>
-        <i className="codicon codicon-symbol-${kind.toLowerCase()}"></i>
+        <i className={`codicon codicon-symbol-${kind.toLowerCase()}`}></i>
         {symbolName}
       </h3>
       {snippets.map((snippet) => (
