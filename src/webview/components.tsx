@@ -1,9 +1,9 @@
-import { useRef, useState, useLayoutEffect, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { extension, groupBy } from "./utils";
 import * as types from "../shared/store";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import { Action } from "../shared/actions";
-import { highlightElement } from "./prism_util";
+import { CodeBlock } from "./components/CodeBlock";
 
 type NoteProps = {
   note: types.Note;
@@ -163,52 +163,5 @@ function SnippetActions(props: SnippetActionsProps) {
         <i className="codicon codicon-trash"></i>
       </button>
     </div>
-  );
-}
-
-type CodeBlockProps = {
-  lines: string[];
-  linesBefore: string[];
-  linesAfter: string[];
-  language: string;
-  startLineNumber: number;
-  endLineNumber: number;
-};
-
-function CodeBlock(props: CodeBlockProps) {
-  const {
-    lines,
-    linesBefore,
-    linesAfter,
-    language,
-    startLineNumber,
-    endLineNumber,
-  } = props;
-  const className = `language-${language} line-numbers`;
-  const code = [...linesBefore, ...lines, ...linesAfter].join("\n");
-  const contextStartLineNumber = startLineNumber - linesBefore.length; // 0-based
-
-  // See: https://github.com/preactjs/preact/issues/3236
-  const preRef = useRef<HTMLPreElement>(null);
-  useLayoutEffect(() => {
-    if (!preRef.current) {
-      throw new Error("preRef.current is null");
-    }
-
-    const codeElement = preRef.current.getElementsByTagName("code")[0];
-    codeElement.textContent = code;
-    highlightElement(codeElement);
-  });
-
-  return (
-    <pre
-      ref={preRef}
-      className={className}
-      data-line={`${startLineNumber + 1}-${endLineNumber + 1}`}
-      data-line-offset={contextStartLineNumber}
-      data-start={contextStartLineNumber + 1}
-    >
-      <code>{code}</code>
-    </pre>
   );
 }
