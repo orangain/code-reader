@@ -76,6 +76,7 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     <script type="module" src="${scriptUri}"></script>
 </head>
 <body>
+    <div id="root"></div>
 </body>
 </html>`;
   }

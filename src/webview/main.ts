@@ -20,6 +20,8 @@ window.addEventListener("message", (event) => {
   }
 });
 
+const root = createRoot(document.getElementById("root"));
+
 const vscode = acquireVsCodeApi<State>();
 
 const lastState = vscode.getState();
@@ -37,6 +39,6 @@ function renderNote(note) {
     vscode.postMessage(action);
   }
 
-  const root = createRoot(document.body);
+  console.log(note);
   root.render(createElement(Note, { note, onAction: handleAction }));
 }
