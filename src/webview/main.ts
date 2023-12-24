@@ -1,5 +1,4 @@
-import { render } from "preact";
-import { html } from "htm/preact";
+import { render, h } from "preact";
 import { Note } from "./components";
 import type * as types from "../store";
 
@@ -37,8 +36,6 @@ function renderNote(note) {
       note,
     });
   }
-  render(
-    html`<${Note} note=${note} onChangeNote=${onChangeNote} />`,
-    document.body
-  );
+
+  render(h(Note, { note, onChangeNote }), document.body);
 }
