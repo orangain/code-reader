@@ -1,7 +1,9 @@
-const { build } = require("esbuild");
+const esbuild = require("esbuild");
 
 //@ts-check
 /** @typedef {import('esbuild').BuildOptions} BuildOptions **/
+/** @typedef {import('esbuild').Plugin} Plugin **/
+
 
 /** @type BuildOptions */
 const baseConfig = {
@@ -34,23 +36,25 @@ const webviewConfig = {
 
 // This watch config adheres to the conventions of the esbuild-problem-matchers
 // extension (https://github.com/connor4312/esbuild-problem-matchers#esbuild-via-js)
-/** @type BuildOptions */
-const watchConfig = {
-  watch: {
-    onRebuild(error, result) {
-      console.log("[watch] build started");
-      if (error) {
-        error.errors.forEach((error) =>
-          console.error(
-            `> ${error.location.file}:${error.location.line}:${error.location.column}: error: ${error.text}`
-          )
-        );
-      } else {
-        console.log("[watch] build finished");
-      }
+/** @type {(buildName: string) => Plugin} */
+function watchResultPlugin(buildName) {
+  return {
+    name: `watch-result-${buildName}`,
+    setup(build) {
+      build.onStart(() => console.log(`[${buildName}] build started`));
+      build.onEnd(result => {
+        console.log(`[${buildName}] build finished`);
+        if (result.errors.length > 0) {
+          result.errors.forEach((error) =>
+            console.error(
+              `> ${error.location.file}:${error.location.line}:${error.location.column}: error: ${error.text}`
+            )
+          );
+        }
+      });
     },
-  },
-};
+  };
+}
 
 // Build script
 (async () => {
@@ -58,20 +62,21 @@ const watchConfig = {
   try {
     if (args.includes("--watch")) {
       // Build and watch extension and webview code
-      console.log("[watch] build started");
-      await build({
+      const extensionContext = await esbuild.context({
         ...extensionConfig,
-        ...watchConfig,
+        plugins: [watchResultPlugin("extension")],
       });
-      await build({
+      const webviewContext = await esbuild.context({
         ...webviewConfig,
-        ...watchConfig,
+        plugins: [watchResultPlugin("webview")]
       });
-      console.log("[watch] build finished");
+
+      await extensionContext.watch();
+      await webviewContext.watch();
     } else {
       // Build extension and webview code
-      await build(extensionConfig);
-      await build(webviewConfig);
+      await esbuild.build(extensionConfig);
+      await esbuild.build(webviewConfig);
       console.log("build complete");
     }
   } catch (err) {
