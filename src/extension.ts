@@ -7,6 +7,7 @@ import { Note, Snippet } from "./shared/store";
 import { NoteViewProvider } from "./view";
 import { vscodeSymbolKindToString } from "./vscode_util";
 import { Action } from "./shared/actions";
+import { randomUUID } from "crypto";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -182,9 +183,7 @@ function saveNote(
 }
 
 function randomId(): string {
-  return (
-    new Date().getTime().toString(36) + Math.random().toString(36).slice(2)
-  );
+  return randomUUID();
 }
 
 async function confirm(message: string): Promise<boolean> {
