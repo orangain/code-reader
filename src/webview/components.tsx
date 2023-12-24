@@ -46,7 +46,11 @@ export function Note(props: NoteProps) {
           filePath={filePath}
           snippets={snippets}
           onDeleteSnippet={handleDeleteSnippet}
-          key={filePath}
+          key={
+            filePath +
+            ":" +
+            snippets.map((snippet) => snippet.snippetId).join(",")
+          }
         />
       ))}
     </>
@@ -83,7 +87,14 @@ function File(props: FileProps) {
   );
 }
 
-function Symbol(props) {
+type SymbolProps = {
+  symbolName: string;
+  kind: string;
+  snippets: types.Snippet[];
+  onDeleteSnippet: (snippetId: string) => void;
+};
+
+function Symbol(props: SymbolProps) {
   const { symbolName, kind, snippets, onDeleteSnippet } = props;
   return (
     <>
@@ -95,14 +106,19 @@ function Symbol(props) {
         <Snippet
           snippet={snippet}
           onDeleteSnippet={onDeleteSnippet}
-          key={snippet.id}
+          key={snippet.snippetId}
         />
       ))}
     </>
   );
 }
 
-function Snippet(props) {
+type SnippetProps = {
+  snippet: types.Snippet;
+  onDeleteSnippet: (snippetId: string) => void;
+};
+
+function Snippet(props: SnippetProps) {
   const { snippet, onDeleteSnippet } = props;
   const [visible, setVisible] = useState(false);
   function handleMouseEnter() {
@@ -136,7 +152,13 @@ function Snippet(props) {
   );
 }
 
-function SnippetActions(props) {
+type SnippetActionsProps = {
+  visible: boolean;
+  snippetId: string;
+  onDeleteSnippet: (snippetId: string) => void;
+};
+
+function SnippetActions(props: SnippetActionsProps) {
   const { visible, snippetId, onDeleteSnippet } = props;
   return (
     <div className="snippet-actions" hidden={!visible}>
@@ -147,7 +169,16 @@ function SnippetActions(props) {
   );
 }
 
-function CodeBlock(props) {
+type CodeBlockProps = {
+  lines: string[];
+  linesBefore: string[];
+  linesAfter: string[];
+  language: string;
+  startLineNumber: number;
+  endLineNumber: number;
+};
+
+function CodeBlock(props: CodeBlockProps) {
   const {
     lines,
     linesBefore,
