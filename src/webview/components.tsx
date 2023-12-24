@@ -1,6 +1,6 @@
 import { useRef, useState, useLayoutEffect } from "react";
 import { extension, groupBy } from "./utils";
-import * as types from "../store";
+import * as types from "../shared/store";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 
 const Prism = globalThis.Prism;

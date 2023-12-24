@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Note } from "./store";
+import { Note } from "./shared/store";
 
 export class NoteViewProvider implements vscode.WebviewViewProvider {
   private webviewView?: vscode.WebviewView;

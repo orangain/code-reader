@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { SymbolKind } from "./store";
+import { SymbolKind } from "./shared/store";
 
 export function vscodeSymbolKindToString(kind: vscode.SymbolKind): SymbolKind {
   switch (kind) {

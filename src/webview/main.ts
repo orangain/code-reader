@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 import { Note } from "./components";
-import type * as types from "../store";
+import type * as types from "../shared/store";
 
 type State = {
   note: types.Note;

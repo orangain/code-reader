@@ -3,7 +3,7 @@
 import path from "path";
 import * as os from "os";
 import * as vscode from "vscode";
-import { Note, Snippet } from "./store";
+import { Note, Snippet } from "./shared/store";
 import { NoteViewProvider } from "./view";
 import { vscodeSymbolKindToString } from "./vscode_util";
 
