@@ -105,6 +105,26 @@ export function activate(context: vscode.ExtensionContext) {
         saveNote(context, activeNote);
         noteViewProvider.renderNote(activeNote);
         break;
+      case "CHANGE_SNIPPET_COMMENT":
+        const snippet = activeNote.snippets.find(
+          (snippet) => snippet.snippetId === action.snippetId
+        );
+        if (!snippet) {
+          throw new Error("snippet not found");
+        }
+        if (snippet.comments.length === 0) {
+          snippet.comments.push({ ...action.comment, commentId: randomId() });
+        } else {
+          snippet.comments = snippet.comments.map((comment) =>
+            comment.commentId === action.comment.commentId
+              ? action.comment
+              : comment
+          );
+        }
+
+        saveNote(context, activeNote);
+        noteViewProvider.renderNote(activeNote);
+        break;
     }
   }
 

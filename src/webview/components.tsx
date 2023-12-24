@@ -4,6 +4,7 @@ import * as types from "../shared/store";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import { Action } from "../shared/actions";
 import { CodeBlock } from "./components/CodeBlock";
+import { SnippetComment } from "./components/SnippetComment";
 
 type NoteProps = {
   note: types.Note;
@@ -30,6 +31,14 @@ export function Note(props: NoteProps) {
     });
   }
 
+  function handleChangeComment(snippetId: string, comment: types.Comment) {
+    onAction({
+      type: "CHANGE_SNIPPET_COMMENT",
+      snippetId,
+      comment,
+    });
+  }
+
   return (
     <>
       <VSCodeTextField
@@ -43,6 +52,7 @@ export function Note(props: NoteProps) {
           filePath={filePath}
           snippets={snippets}
           onDeleteSnippet={handleDeleteSnippet}
+          onChangeComment={handleChangeComment}
           key={
             filePath +
             ":" +
@@ -58,10 +68,11 @@ type FileProps = {
   filePath: string;
   snippets: types.Snippet[];
   onDeleteSnippet: (snippetId: string) => void;
+  onChangeComment: (snippetId: string, comment: types.Comment) => void;
 };
 
 function File(props: FileProps) {
-  const { filePath, snippets, onDeleteSnippet } = props;
+  const { filePath, snippets, onDeleteSnippet, onChangeComment } = props;
   const snippetsBySymbolName = groupBy(
     snippets,
     (snippet) => snippet.contextSymbols[0]?.name ?? ""
@@ -77,6 +88,7 @@ function File(props: FileProps) {
           kind={snippets[0].contextSymbols[0]?.kind ?? ""}
           snippets={snippets}
           onDeleteSnippet={onDeleteSnippet}
+          onChangeComment={onChangeComment}
           key={symbolName}
         />
       ))}
@@ -89,10 +101,12 @@ type SymbolProps = {
   kind: string;
   snippets: types.Snippet[];
   onDeleteSnippet: (snippetId: string) => void;
+  onChangeComment: (snippetId: string, comment: types.Comment) => void;
 };
 
 function Symbol(props: SymbolProps) {
-  const { symbolName, kind, snippets, onDeleteSnippet } = props;
+  const { symbolName, kind, snippets, onDeleteSnippet, onChangeComment } =
+    props;
   return (
     <>
       <h3>
@@ -103,6 +117,7 @@ function Symbol(props: SymbolProps) {
         <Snippet
           snippet={snippet}
           onDeleteSnippet={onDeleteSnippet}
+          onChangeComment={onChangeComment}
           key={snippet.snippetId}
         />
       ))}
@@ -113,16 +128,32 @@ function Symbol(props: SymbolProps) {
 type SnippetProps = {
   snippet: types.Snippet;
   onDeleteSnippet: (snippetId: string) => void;
+  onChangeComment: (snippetId: string, comment: types.Comment) => void;
 };
 
 function Snippet(props: SnippetProps) {
-  const { snippet, onDeleteSnippet } = props;
+  const { snippet, onDeleteSnippet, onChangeComment } = props;
   const [visible, setVisible] = useState(false);
   function handleMouseEnter() {
     setVisible(true);
   }
   function handleMouseLeave() {
     setVisible(false);
+  }
+  function handleChangeComment(snippetId: string, commentText: string) {
+    const newComment: types.Comment =
+      snippet.comments.length > 0
+        ? {
+            ...snippet.comments[0],
+            text: commentText,
+          }
+        : {
+            commentId: "",
+            startLineNumber: snippet.startLineNumber,
+            endLineNumber: snippet.endLineNumber,
+            text: commentText,
+          };
+    onChangeComment(snippetId, newComment);
   }
 
   return (
@@ -144,6 +175,11 @@ function Snippet(props: SnippetProps) {
         language={extension(snippet.filePath)}
         startLineNumber={snippet.startLineNumber}
         endLineNumber={snippet.endLineNumber}
+      />
+      <SnippetComment
+        snippetId={snippet.snippetId}
+        comment={snippet.comments.at(0)}
+        onChangeComment={handleChangeComment}
       />
     </div>
   );

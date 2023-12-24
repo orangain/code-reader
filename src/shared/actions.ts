@@ -1,4 +1,4 @@
-import { Snippet } from "./store";
+import { Comment, Snippet } from "./store";
 
 export type Action =
   | {
@@ -16,4 +16,9 @@ export type Action =
       type: "CHANGE_NOTE_TITLE";
       noteId: string;
       title: string;
+    }
+  | {
+      type: "CHANGE_SNIPPET_COMMENT";
+      snippetId: string;
+      comment: Comment;
     };
