@@ -2,32 +2,43 @@ import { useRef, useState, useLayoutEffect } from "react";
 import { extension, groupBy } from "./utils";
 import * as types from "../shared/store";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import { Action } from "../shared/actions";
 
 const Prism = globalThis.Prism;
 Prism.manual = true;
 
 type NoteProps = {
   note: types.Note;
-  onChangeNote: (note: types.Note) => void;
+  onAction: (action: Action) => void;
 };
 
 export function Note(props: NoteProps) {
-  const { note, onChangeNote } = props;
+  const { note, onAction } = props;
 
   const snippetsByFile = groupBy(note.snippets, (snippet) => snippet.filePath);
 
-  function handleDeleteSnippet(snippetId) {
-    console.log("handleDeleteSnippet", snippetId);
-    const newSnippets = note.snippets.filter((s) => s.snippetId !== snippetId);
-    onChangeNote({
-      ...note,
-      snippets: newSnippets,
+  function handleDeleteSnippet(snippetId: string) {
+    onAction({
+      type: "DELETE_SNIPPET",
+      snippetId,
+    });
+  }
+
+  function handleChangeTitle(event: React.ChangeEvent<HTMLInputElement>) {
+    onAction({
+      type: "CHANGE_NOTE_TITLE",
+      noteId: note.noteId,
+      title: event.target.value,
     });
   }
 
   return (
     <>
-      <VSCodeTextField value={note.title || "Untitled"} label="Title">
+      <VSCodeTextField
+        value={note.title || "Untitled"}
+        label="Title"
+        onChange={handleChangeTitle}
+      >
         Title
       </VSCodeTextField>
       {snippetsByFile.map(([filePath, snippets]) => (

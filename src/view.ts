@@ -1,20 +1,18 @@
 import * as vscode from "vscode";
 import { Note } from "./shared/store";
+import { Action } from "./shared/actions";
 
 export class NoteViewProvider implements vscode.WebviewViewProvider {
   private webviewView?: vscode.WebviewView;
   private extensionUri: vscode.Uri;
-  private onReady: () => void;
-  private onUpdateNote: (note: Note) => void;
+  private onAction: (action: Action) => Promise<void>;
 
   constructor(
     extensionUri: vscode.Uri,
-    onReady: () => void,
-    onUpdateNote: (note: Note) => void
+    onAction: (action: Action) => Promise<void>
   ) {
     this.extensionUri = extensionUri;
-    this.onReady = onReady;
-    this.onUpdateNote = onUpdateNote;
+    this.onAction = onAction;
   }
 
   resolveWebviewView(
@@ -29,21 +27,10 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.onDidReceiveMessage((message) => {
-      this.onMessage(message);
+      this.onAction(message);
     });
 
     webviewView.webview.html = this.initialWebviewContent();
-  }
-
-  onMessage(message: any) {
-    switch (message.type) {
-      case "ready":
-        this.onReady();
-        break;
-      case "updateNote":
-        this.onUpdateNote(message.note);
-        break;
-    }
   }
 
   initialWebviewContent() {

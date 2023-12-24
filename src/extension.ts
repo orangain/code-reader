@@ -6,6 +6,7 @@ import * as vscode from "vscode";
 import { Note, Snippet } from "./shared/store";
 import { NoteViewProvider } from "./view";
 import { vscodeSymbolKindToString } from "./vscode_util";
+import { Action } from "./shared/actions";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -80,29 +81,29 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const noteViewProvider = new NoteViewProvider(
-    context.extensionUri,
-    () => {
-      noteViewProvider.renderNote(activeNote);
-    },
-    (note) => {
-      vscode.window
-        .showInformationMessage(
-          "Are you sure you want to delete this snippet?",
-          { modal: true },
-          { title: "Yes" },
-          { title: "No", isCloseAffordance: true }
-        )
-        .then((answer) => {
-          if (answer?.title === "Yes") {
-            activeNote.title = note.title;
-            activeNote.snippets = note.snippets;
-            saveNote(context, activeNote);
-            noteViewProvider.renderNote(activeNote);
-          }
-        });
+  async function onAction(action: Action) {
+    switch (action.type) {
+      case "READY":
+        noteViewProvider.renderNote(activeNote);
+        break;
+      case "DELETE_SNIPPET":
+        if (await confirm("Are you sure you want to delete this snippet?")) {
+          activeNote.snippets = activeNote.snippets.filter(
+            (snippet) => snippet.snippetId !== action.snippetId
+          );
+          saveNote(context, activeNote);
+          noteViewProvider.renderNote(activeNote);
+        }
+        break;
+      case "CHANGE_NOTE_TITLE":
+        activeNote.title = action.title;
+        saveNote(context, activeNote);
+        noteViewProvider.renderNote(activeNote);
+        break;
     }
-  );
+  }
+
+  const noteViewProvider = new NoteViewProvider(context.extensionUri, onAction);
 
   context.subscriptions.push(disposable);
   context.subscriptions.push(
@@ -196,6 +197,19 @@ function saveNote(
 function randomId(): string {
   return (
     new Date().getTime().toString(36) + Math.random().toString(36).slice(2)
+  );
+}
+
+async function confirm(message: string): Promise<boolean> {
+  return (
+    (
+      await vscode.window.showInformationMessage(
+        message,
+        { modal: true },
+        { title: "Yes" },
+        { title: "No", isCloseAffordance: true }
+      )
+    )?.title === "Yes"
   );
 }
 
