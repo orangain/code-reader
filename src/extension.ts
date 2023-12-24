@@ -72,18 +72,22 @@ export function activate(context: vscode.ExtensionContext) {
         })),
         comments: [],
       };
-      activeNote.snippets.push(snippet);
-      saveNote(context, activeNote);
 
-      noteViewProvider.renderNote(activeNote);
-
-      await resolveDefinitions(editor);
+      onAction({
+        type: "ADD_SNIPPET",
+        snippet,
+      });
     }
   );
 
   async function onAction(action: Action) {
     switch (action.type) {
       case "READY":
+        noteViewProvider.renderNote(activeNote);
+        break;
+      case "ADD_SNIPPET":
+        activeNote.snippets.push(action.snippet);
+        saveNote(context, activeNote);
         noteViewProvider.renderNote(activeNote);
         break;
       case "DELETE_SNIPPET":
