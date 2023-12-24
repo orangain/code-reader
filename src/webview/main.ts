@@ -1,4 +1,5 @@
-import { render, h } from "preact";
+import { createElement } from "react";
+import { createRoot } from "react-dom/client";
 import { Note } from "./components";
 import type * as types from "../store";
 
@@ -37,5 +38,6 @@ function renderNote(note) {
     });
   }
 
-  render(h(Note, { note, onChangeNote }), document.body);
+  const root = createRoot(document.body);
+  root.render(createElement(Note, { note, onChangeNote }));
 }
