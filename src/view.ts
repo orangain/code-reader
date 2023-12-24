@@ -56,6 +56,9 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
         "codicon.css"
       )
     );
+    const nodeModulesUri = this.webviewView!.webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, "node_modules")
+    );
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -67,12 +70,11 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
     <link href="${prismStyleUri}" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <link href="${codiconsStyleUri}" rel="stylesheet">
     <link href="${styleUri}" rel="stylesheet">
+    <script>
+        window.nodeModulesUri = "${nodeModulesUri}";
+    </script>
     <script type="module" src="${scriptUri}"></script>
 </head>
 <body>

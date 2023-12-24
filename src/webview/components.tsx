@@ -3,9 +3,7 @@ import { extension, groupBy } from "./utils";
 import * as types from "../shared/store";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import { Action } from "../shared/actions";
-
-const Prism = globalThis.Prism;
-Prism.manual = true;
+import { highlightElement } from "./prism_util";
 
 type NoteProps = {
   note: types.Note;
@@ -199,7 +197,7 @@ function CodeBlock(props: CodeBlockProps) {
 
     const codeElement = preRef.current.getElementsByTagName("code")[0];
     codeElement.textContent = code;
-    Prism.highlightElement(codeElement);
+    highlightElement(codeElement);
   });
 
   return (
