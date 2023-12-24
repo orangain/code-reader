@@ -12,13 +12,13 @@ export function extension(filePath: string): string {
 /**
  * Group the items in an array by a key.
  */
-export function groupBy<T>(
-  array: T[],
-  getKey: (item: T) => PropertyKey
-): [PropertyKey, T[]][] {
-  const grouped: [PropertyKey, T[]][] = [];
-  let lastKey: PropertyKey | null = null;
-  let lastGroup: T[] = [];
+export function groupBy<K extends PropertyKey, V>(
+  array: V[],
+  getKey: (item: V) => K
+): [K, V[]][] {
+  const grouped: [K, V[]][] = [];
+  let lastKey: K | null = null;
+  let lastGroup: V[] = [];
 
   for (const item of array) {
     const key = getKey(item);
