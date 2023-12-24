@@ -55,7 +55,7 @@ function File(props: FileProps) {
   return (
     <>
       <h2>
-        <i class="codicon codicon-symbol-file"></i> {filePath}
+        <i className="codicon codicon-symbol-file"></i> {filePath}
       </h2>
       {snippetsBySymbolName.map(([symbolName, snippets]) => (
         <Symbol
@@ -75,7 +75,7 @@ function Symbol(props) {
   return (
     <>
       <h3>
-        <i class="codicon codicon-symbol-${kind.toLowerCase()}"></i>
+        <i className="codicon codicon-symbol-${kind.toLowerCase()}"></i>
         {symbolName}
       </h3>
       {snippets.map((snippet) => (
@@ -101,7 +101,7 @@ function Snippet(props) {
 
   return (
     <div
-      class="snippet"
+      className="snippet"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -126,9 +126,9 @@ function Snippet(props) {
 function SnippetActions(props) {
   const { visible, snippetId, onDeleteSnippet } = props;
   return (
-    <div class="snippet-actions" hidden={!visible}>
+    <div className="snippet-actions" hidden={!visible}>
       <button type="button" onClick={() => onDeleteSnippet(snippetId)}>
-        <i class="codicon codicon-trash"></i>
+        <i className="codicon codicon-trash"></i>
       </button>
     </div>
   );
@@ -162,12 +162,12 @@ function CodeBlock(props) {
   return (
     <pre
       ref={preRef}
-      class={className}
+      className={className}
       data-line={`${startLineNumber + 1}-${endLineNumber + 1}`}
       data-line-offset={contextStartLineNumber}
       data-start={contextStartLineNumber + 1}
     >
-      <code dangerouslySetInnerHTML={{ __html: code }}>{code}</code>
+      <code>{code}</code>
     </pre>
   );
 }
