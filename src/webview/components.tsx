@@ -1,6 +1,7 @@
 import { useRef, useState, useLayoutEffect } from "react";
 import { extension, groupBy } from "./utils";
 import * as types from "../store";
+import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 
 const Prism = globalThis.Prism;
 Prism.manual = true;
@@ -26,7 +27,9 @@ export function Note(props: NoteProps) {
 
   return (
     <>
-      <h1>{note.title || "Untitled"}</h1>
+      <VSCodeTextField value={note.title || "Untitled"} label="Title">
+        Title
+      </VSCodeTextField>
       {snippetsByFile.map(([filePath, snippets]) => (
         <File
           filePath={filePath}
