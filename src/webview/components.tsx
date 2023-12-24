@@ -1,5 +1,5 @@
+import { h, Fragment } from "preact";
 import { useRef, useState, useLayoutEffect } from "preact/hooks";
-import { html } from "htm/preact";
 import { extension, groupBy } from "./utils";
 import * as types from "../store";
 
@@ -25,17 +25,19 @@ export function Note(props: NoteProps) {
     });
   }
 
-  return html`
-    <h1>${note.title || "Untitled"}</h1>
-    ${snippetsByFile.map(
-      ([filePath, snippets]) => html`<${File}
-        filePath=${filePath}
-        snippets=${snippets}
-        onDeleteSnippet=${handleDeleteSnippet}
-        key=${filePath}
-      />`
-    )}
-  `;
+  return (
+    <>
+      <h1>{note.title || "Untitled"}</h1>
+      {snippetsByFile.map(([filePath, snippets]) => (
+        <File
+          filePath={filePath}
+          snippets={snippets}
+          onDeleteSnippet={handleDeleteSnippet}
+          key={filePath}
+        />
+      ))}
+    </>
+  );
 }
 
 type FileProps = {
@@ -50,37 +52,41 @@ function File(props: FileProps) {
     snippets,
     (snippet) => snippet.contextSymbols[0]?.name ?? ""
   );
-  return html`
-    <h2><i class="codicon codicon-symbol-file"></i> ${filePath}</h2>
-    ${snippetsBySymbolName.map(
-      ([symbolName, snippets]) => html`
-        <${Symbol}
-          symbolName=${symbolName}
-          kind=${snippets[0].contextSymbols[0]?.kind ?? ""}
-          snippets=${snippets}
-          onDeleteSnippet=${onDeleteSnippet}
-          key=${symbolName}
+  return (
+    <>
+      <h2>
+        <i class="codicon codicon-symbol-file"></i> {filePath}
+      </h2>
+      {snippetsBySymbolName.map(([symbolName, snippets]) => (
+        <Symbol
+          symbolName={symbolName}
+          kind={snippets[0].contextSymbols[0]?.kind ?? ""}
+          snippets={snippets}
+          onDeleteSnippet={onDeleteSnippet}
+          key={symbolName}
         />
-      `
-    )}
-  `;
+      ))}
+    </>
+  );
 }
 
 function Symbol(props) {
   const { symbolName, kind, snippets, onDeleteSnippet } = props;
-  return html`
-    <h3>
-      <i class="codicon codicon-symbol-${kind.toLowerCase()}"></i>
-      ${symbolName}
-    </h3>
-    ${snippets.map(
-      (snippet) => html`<${Snippet}
-        snippet=${snippet}
-        onDeleteSnippet=${onDeleteSnippet}
-        key=${snippet.id}
-      />`
-    )}
-  `;
+  return (
+    <>
+      <h3>
+        <i class="codicon codicon-symbol-${kind.toLowerCase()}"></i>
+        {symbolName}
+      </h3>
+      {snippets.map((snippet) => (
+        <Snippet
+          snippet={snippet}
+          onDeleteSnippet={onDeleteSnippet}
+          key={snippet.id}
+        />
+      ))}
+    </>
+  );
 }
 
 function Snippet(props) {
@@ -93,35 +99,39 @@ function Snippet(props) {
     setVisible(false);
   }
 
-  return html`<div
-    class="snippet"
-    onMouseEnter=${handleMouseEnter}
-    onMouseLeave=${handleMouseLeave}
-  >
-    <${SnippetActions}
-      visible=${visible}
-      snippetId=${snippet.snippetId}
-      onDeleteSnippet=${onDeleteSnippet}
-    />
-    <${CodeBlock}
-      key=${snippet.snippetId}
-      lines=${snippet.lines}
-      linesBefore=${snippet.linesBefore.slice(-3)}
-      linesAfter=${snippet.linesAfter.slice(0, 3)}
-      language=${extension(snippet.filePath)}
-      startLineNumber=${snippet.startLineNumber}
-      endLineNumber=${snippet.endLineNumber}
-    />
-  </div>`;
+  return (
+    <div
+      class="snippet"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <SnippetActions
+        visible={visible}
+        snippetId={snippet.snippetId}
+        onDeleteSnippet={onDeleteSnippet}
+      />
+      <CodeBlock
+        key={snippet.snippetId}
+        lines={snippet.lines}
+        linesBefore={snippet.linesBefore.slice(-3)}
+        linesAfter={snippet.linesAfter.slice(0, 3)}
+        language={extension(snippet.filePath)}
+        startLineNumber={snippet.startLineNumber}
+        endLineNumber={snippet.endLineNumber}
+      />
+    </div>
+  );
 }
 
 function SnippetActions(props) {
   const { visible, snippetId, onDeleteSnippet } = props;
-  return html`<div class="snippet-actions" hidden=${!visible}>
-    <button type="button" onClick=${() => onDeleteSnippet(snippetId)}>
-      <i class="codicon codicon-trash"></i>
-    </button>
-  </div>`;
+  return (
+    <div class="snippet-actions" hidden={!visible}>
+      <button type="button" onClick={() => onDeleteSnippet(snippetId)}>
+        <i class="codicon codicon-trash"></i>
+      </button>
+    </div>
+  );
 }
 
 function CodeBlock(props) {
@@ -149,13 +159,15 @@ function CodeBlock(props) {
     Prism.highlightElement(codeElement);
   });
 
-  return html`<pre
-    ref=${preRef}
-    class=${className}
-    data-line="${startLineNumber + 1}-${endLineNumber + 1}"
-    data-line-offset=${contextStartLineNumber}
-    data-start=${contextStartLineNumber + 1}
-  >
-            <code dangerouslySetInnerHTML=${{}}>${code}</code>
-        </pre>`;
+  return (
+    <pre
+      ref={preRef}
+      class={className}
+      data-line={`${startLineNumber + 1}-${endLineNumber + 1}`}
+      data-line-offset={contextStartLineNumber}
+      data-start={contextStartLineNumber + 1}
+    >
+      <code dangerouslySetInnerHTML={{ __html: code }}>{code}</code>
+    </pre>
+  );
 }
