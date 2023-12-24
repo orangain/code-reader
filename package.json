@@ -69,6 +69,8 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
     "@vscode/codicons": "^0.0.35",
     "@vscode/webview-ui-toolkit": "^1.4.0",
     "htm": "^3.1.1",
