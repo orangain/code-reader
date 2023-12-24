@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, ChangeEvent } from "react";
 import { extension, groupBy } from "./utils";
 import * as types from "../shared/store";
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
@@ -24,11 +24,11 @@ export function Note(props: NoteProps) {
     });
   }
 
-  function handleChangeTitle(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleChangeTitle(event: ChangeEvent<HTMLInputElement>) {
     onAction({
       type: "CHANGE_NOTE_TITLE",
       noteId: note.noteId,
-      title: event.target.value,
+      title: event.currentTarget.value,
     });
   }
 
@@ -36,8 +36,7 @@ export function Note(props: NoteProps) {
     <>
       <VSCodeTextField
         value={note.title || "Untitled"}
-        label="Title"
-        onChange={handleChangeTitle}
+        onChange={handleChangeTitle as any}
       >
         Title
       </VSCodeTextField>

@@ -20,7 +20,7 @@ window.addEventListener("message", (event) => {
   }
 });
 
-const root = createRoot(document.getElementById("root"));
+const root = createRoot(document.getElementById("root")!);
 
 const vscode = acquireVsCodeApi<State>();
 
@@ -33,7 +33,7 @@ if (!lastState) {
   renderNote(lastState.note);
 }
 
-function renderNote(note) {
+function renderNote(note: types.Note) {
   function handleAction(action: Action) {
     console.log(action);
     vscode.postMessage(action);
