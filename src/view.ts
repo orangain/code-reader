@@ -55,7 +55,7 @@ export class NoteViewProvider implements vscode.WebviewViewProvider {
         : "https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-vs.min.css";
 
     const scriptUri = this.webviewView!.webview.asWebviewUri(
-      vscode.Uri.joinPath(this.extensionUri, "media", "main.js")
+      vscode.Uri.joinPath(this.extensionUri, "out", "webview.js")
     );
     const styleUri = this.webviewView!.webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, "media", "main.css")
